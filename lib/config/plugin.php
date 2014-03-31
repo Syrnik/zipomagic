@@ -5,11 +5,11 @@ return array(
     'description' => _wp('Automatically populate the Region and the City based on postcode. Russian Federation only.'),
     'vendor'=>670917,
     'version'=>'1.0',
-    'img'=>'img/ziporus.png',
+    'img'=>'img/zipomagic.png',
     'shop_settings' => FALSE,
     'frontend'    => true,
     'icons'=>array(
-        16 => 'img/ziporus.png',
+        16 => 'img/zipomagic.png',
     ),
     'handlers' => array(
         'frontend_checkout' => 'hookFrontendCheckout'

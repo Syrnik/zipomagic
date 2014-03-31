@@ -1,7 +1,7 @@
 <script type="text/javascript">
     $('#checkout-contact-form .wa-field-address input[name$="[zip]"]').after('<span class="hint">Регион и населенный пункт России будут заполнены автоматически</span>');
     $("#checkout-contact-form .wa-field-address").on("keyup", 'input[name$="[zip]"]', function(e){
-        var url='{$wa_app_url}ziporus';
+        var url='{$wa_app_url}zipomagic';
         var fieldset = $(this).closest('.wa-field-address');
         var country = $('select[name$="[country]"] option:selected', fieldset).val();
         var city = $('input[name$="[city]"]', fieldset);

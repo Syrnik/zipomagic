@@ -4,7 +4,7 @@
  * @copyright (c) 2014, Serge Rodovnichenko
  * @license http://www.webasyst.com/terms/#eula Webasyst
  */
-class shopZiporusPlugin extends shopPlugin
+class shopZipomagicPlugin extends shopPlugin
 {
     public function hookFrontendCheckout()
     {

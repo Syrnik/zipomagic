@@ -1,7 +1,7 @@
 <?php
 return array(
     'ziporus' => array(
-        'plugin' => 'ziporus',
+        'plugin' => 'zipomagic',
         'module' => 'frontend'
     )
 );

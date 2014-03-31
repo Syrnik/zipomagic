@@ -4,7 +4,7 @@
  * @copyright (c) 2014, Serge Rodovnichenko
  * @license http://www.webasyst.com/terms/#eula Webasyst
  */
-class shopZiporusPluginFrontendController extends waJsonController
+class shopZipomagicPluginFrontendController extends waJsonController
 {
     public function run($params = null) {
 
@@ -21,7 +21,7 @@ class shopZiporusPluginFrontendController extends waJsonController
 
     public function execute()
     {
-        $Zip = new shopZiporusPluginZipModel();
+        $Zip = new shopZipomagicPluginZipModel();
 
         $zip_code = waRequest::get('zip', '', waRequest::TYPE_STRING_TRIM);
 
