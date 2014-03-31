@@ -7,9 +7,14 @@
  */
 class shopZipomagicPlugin extends shopPlugin
 {
+    /**
+     * Обработка вызова хука frontend_checkout
+     * 
+     * @link http://www.webasyst.ru/developers/docs/plugins/hooks/shop/frontend_checkout/ Описание хука
+     * @return string Отрендеренный шаблон с HTML/JS кодом для вставки в страницу
+     */
     public function hookFrontendCheckout()
     {
-
         $view = waSystem::getInstance()->getView();
 
         $template = $this->path . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'frontend_checkout.html';

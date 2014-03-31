@@ -1,5 +1,7 @@
 <?php
 /**
+ * Обработка запросов из фронтенда на выборку данных
+ * 
  * @package Zipomagic.Controllers.Frontend
  * @version 1.0
  * @copyright (c) 2014, Serge Rodovnichenko
@@ -7,6 +9,11 @@
  */
 class shopZipomagicPluginFrontendController extends waJsonController
 {
+    /**
+     * Родительский метод переопределен чтобы ловил исключения и записывал их
+     * в ошибки ответа. Заодно добавляет соответствующий заголовок в ответ
+     * @param mixed $params Не используется ни здесь, ни родителями
+     */
     public function run($params = null) {
 
         try{
@@ -20,6 +27,10 @@ class shopZipomagicPluginFrontendController extends waJsonController
         $this->display();
     }
 
+
+    /**
+     * @throws waException при возникших ошибках. Критических среди них нет.
+     */
     public function execute()
     {
         $Zip = new shopZipomagicPluginZipModel();
