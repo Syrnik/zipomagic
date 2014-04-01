@@ -47,7 +47,7 @@
         else { $(this).data('user-modified', 0); }
     });
     $("#checkout-contact-form .wa-field-address").on("change", 'select[name$="[country]"]', function(){
-        if($(this).val() === 'rus'){ $('#checkout-contact-form .wa-field-address .ziphint').text('[`Region and city will be filled in automatically`]'); }
+        if($(this).val() === 'rus'){ $('#checkout-contact-form .wa-field-address .ziphint').css("color", "").text('[`Region and city will be filled in automatically`]'); }
         else { $('#checkout-contact-form .wa-field-address .ziphint').text(' '); };
     });
 </script>

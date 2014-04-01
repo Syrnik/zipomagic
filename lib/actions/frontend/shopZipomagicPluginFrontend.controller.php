@@ -43,7 +43,7 @@ class shopZipomagicPluginFrontendController extends waJsonController
         $result = $Zip->getByField('zip', $zip_code);
 
         if(!$result || !isset($result['region_code']) || !isset($result['city']))
-            throw new waException('Unknown postal code');
+            throw new waException(_wp('Unknown postal code'));
 
         $this->response = $result;
 
