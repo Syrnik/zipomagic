@@ -1,3 +1,8 @@
+{**
+ * Поля регион и город должны обновляться, только если покупатель не
+ * изменял их значения. А то будут непонятки — ввел свои данные,
+ * указал индекс и все поменялось
+ *}
 <script type="text/javascript">
     if($('#checkout-contact-form .wa-field-address select[name$="[country]"]').val()==='rus'){
         $('#checkout-contact-form .wa-field-address input[name$="[zip]"]').after('<span class="hint ziphint">[`Region and city will be filled in automatically`]</span>');
