@@ -7,7 +7,7 @@
  */
 
 return array(
-    'ziporus' => array(
+    'zipomagic' => array(
         'plugin' => 'zipomagic',
         'module' => 'frontend'
     )
