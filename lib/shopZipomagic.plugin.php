@@ -18,6 +18,7 @@ class shopZipomagicPlugin extends shopPlugin
         $view = waSystem::getInstance()->getView();
 
         $template = $this->path . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'frontend_checkout.html';
+        $view->assign('settings', $this->getSettings());
 
         $html = $view->fetch($template);
 
