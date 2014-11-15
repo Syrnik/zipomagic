@@ -34,7 +34,6 @@
                             $('input[name$="[zip]"]', this.checkoutForm).after('<span class="hint ziphint">&nbsp;</span>');
                         }
                         this.checkoutForm.on("change", 'select[name$="[country]"]', function(){
-                            console.log(this);
                             if($(this).val() === 'rus'){
                                 $.Zipomagic.zipHint(fieldset, '{_wp("Region and city will be filled in automatically")|escape:javascript}', { color:""});
                             }
@@ -45,11 +44,7 @@
                     }
                 },
                 userModifyCheck: function(){
-                    if($(this).val()){
-                        $(this).data('user-modified', 1);
-                    } else {
-                        $(this).data('user-modified', 0);
-                    }
+                    $(this).data('user-modified', ($(this).val() ? 1 : 0));
                 },
                 formUpdater: function() {
                     var fieldset = $(this).closest('.wa-field-address');
@@ -106,74 +101,4 @@
         };
         $.Zipomagic.init('checkout');
     });
-    
-    {*if $settings.show_hint}
-    if($('#checkout-contact-form .wa-field-address select[name$="[country]"]').val()==='rus'){
-        $('#checkout-contact-form .wa-field-address input[name$="[zip]"]').after('<span class="hint ziphint">[`Region and city will be filled in automatically`]</span>');
-    } else { $('#checkout-contact-form .wa-field-address input[name$="[zip]"]').after('<span class="hint ziphint">&nbsp;</span>'); };
-    {/if}
-    $("#checkout-contact-form .wa-field-address").on("keyup", 'input[name$="[zip]"]', function(e){
-        var url='{$wa_app_url}zipomagic';
-        var fieldset = $(this).closest('.wa-field-address');
-        var country = $('select[name$="[country]"] option:selected', fieldset).val();
-        var city = $('input[name$="[city]"]', fieldset);
-        var region = $('select[name$="[region]"]', fieldset);
-        {if $settings.show_hint}
-        var ziphint = $('#checkout-contact-form .wa-field-address .ziphint');
-        {/if}
-        var city_state = function(){ return city.data('user-modified') !== 1; };
-        var region_state = function(){ return region.data('user-modified') !== 1;};
-
-        if(country === 'rus' && $(this).val().length === 6 && city_state() && region_state())
-        {
-            city.attr('disabled', 'disabled');
-            region.attr('disabled', 'disabled');
-
-            $.get(url, { zip:$(this).val() }).success(function(r){
-                if(r.status && r.status === 'ok' && r.data && r.data.city && r.data.region_code){
-                    city.val(r.data.city);
-                    $('option[value="'+r.data.region_code+'"]', region).attr('selected', 'selected');
-                    {if $settings.show_hint}
-                    ziphint.text('[`Сheck the correctness of the region and city fields`]');
-                    ziphint.css('color', 'forestgreen');
-                    {/if}
-                } else if(r.status && r.status === 'fail' && r.errors){
-                    {if $settings.show_hint}
-                    ziphint.text(r.errors[0]);
-                    ziphint.css('color', 'firebrick');
-                    {/if}
-                }
-            }).error(function(){
-                {if $settings.show_hint}
-                ziphint.text('[`Unknown error`]');
-                ziphint.css('color', 'firebrick');
-                {/if}
-            }).complete(function(){ city.removeAttr('disabled'); region.removeAttr('disabled'); });
-        }
-    });
-{*
-* Если пользователь менял значение city или region вручную и у них непустые
-* значения, то мы ничего уже менять не будем
-*}{*
-    $("#checkout-contact-form .wa-field-address").on("change", 'input[name$="[city]"]', function(){
-        if($(this).val()){ $(this).data('user-modified', 1); }
-        else { $(this).data('user-modified', 0); }
-    });
-    $("#checkout-contact-form .wa-field-address").on("change", 'select[name$="[region]"]', function(){
-        if($(this).val()){ $(this).data('user-modified', 1); }
-        else { $(this).data('user-modified', 0); }
-    });
-    $("#checkout-contact-form .wa-field-address").on("change", 'select[name$="[country]"]', function(){
-        if($(this).val() === 'rus'){
-            {if $settings.show_hint}
-            $('#checkout-contact-form .wa-field-address .ziphint').css("color", "").text('[`Region and city will be filled in automatically`]');
-            {/if}
-        }
-        else {
-            {if $settings.show_hint}
-            $('#checkout-contact-form .wa-field-address .ziphint').text(' ');
-            {/if}
-        };
-    });
-*}    
 </script>
