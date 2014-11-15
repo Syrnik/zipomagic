@@ -3,7 +3,7 @@
  * изменял их значения. А то будут непонятки — ввел свои данные,
  * указал индекс и все поменялось
  *}
-<script type="text/javascript">    
+<script type="text/javascript">
     $(function(){
         if(!$.Zipomagic) {
             $.Zipomagic = {
@@ -24,7 +24,14 @@
                     $("#checkout-contact-form .wa-field-address").on("change", 'select[name$="[region]"]', this.userModifyCheck);
                 },
                 shippingHandlerInit: function(){
-                    console.log("Shipping");
+                    this.shippingForm = $('div.checkout-content[data-step-id="shipping"]');
+                    this.initShippingHints();
+                    this.shippingForm.on("change", '.wa-form.wa-address input[name$="[city]"]', this.userModifyCheck);
+                    this.shippingForm.on("change", '.wa-form.wa-address select[name$="[region]"]', this.userModifyCheck);
+                    this.shippingForm.on("keyup", '.wa-form.wa-address input[name$="[zip]"]', this.formUpdater);
+                },
+                initShippingHints: function(){
+                    // No hints at this release
                 },
                 initCheckoutHints: function(){
                     if(this.show_hint) {
@@ -48,14 +55,21 @@
                 },
                 formUpdater: function() {
                     var fieldset = $(this).closest('.wa-field-address');
-                    var country = $('select[name$="[country]"] option:selected', fieldset).val();
+                    var country="";
                     var city = $('input[name$="[city]"]', fieldset);
                     var region = $.extend($('select[name$="[region]"]', fieldset),{
                         zipomagicSelect: function(code){
-                            $('option[value="'+code+'"]', this).attr('selected', 'selected');
+                            $('option', this).removeProp('selected');
+                            $('option[value="'+code+'"]', this).prop('selected', true);
                         }
                     });
                     var zip = $('input[name$="[zip]"]', fieldset);
+                    
+                    if($('select[name$="[country]"] option:selected', fieldset).length) {
+                        country = $('select[name$="[country]"] option:selected', fieldset).val();
+                    } else if($('input[name$="[country]"]', fieldset).length) {
+                        country = $('input[name$="[country]"]', fieldset).val();
+                    };
 
                     if(isRussia() && !isUserChangedCityOrRegion() && isZipComplete()){
                         city.attr('disabled', 'disabled');
@@ -63,8 +77,12 @@
                         $.get($.Zipomagic.url, { zip:zip.val() })
                             .success(function(r){
                                 if(r.status && r.status === 'ok' && r.data && r.data.city && r.data.region_code){
+                                    city.removeAttr('disabled');
+                                    region.removeAttr('disabled');
                                     region.zipomagicSelect(r.data.region_code);
                                     city.val(r.data.city);
+                                    city.trigger("change");
+                                    city.data('user-modified',0);
                                     $.Zipomagic.zipHint(fieldset, '{_wp("Сheck the correctness of the region and city fields")|escape:javascript}', { color:"forestgreen" });
                                 } else {
                                     $.Zipomagic.zipHint(fieldset, r.errors[0], { color:"firebrick" });
@@ -99,6 +117,11 @@
                 }
             };
         };
-        $.Zipomagic.init('checkout');
+        {if $stage == 'contactinfo'}{* @todo: Rename all methods and variables that depends of stage name *}
+            $.Zipomagic.init('checkout');
+        {/if}
+        {if $stage == 'shipping'}
+            $.Zipomagic.init('shipping');
+        {/if}
     });
 </script>
