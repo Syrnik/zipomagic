@@ -3,8 +3,111 @@
  * изменял их значения. А то будут непонятки — ввел свои данные,
  * указал индекс и все поменялось
  *}
-<script type="text/javascript">
-    {if $settings.show_hint}
+<script type="text/javascript">    
+    $(function(){
+        if(!$.Zipomagic) {
+            $.Zipomagic = {
+                show_hint: {if $settings.show_hint}1{else}0{/if},
+                url: '{$wa->getUrl('shop/frontend/zipomagic')}',
+                checkoutForm: null,
+                shippingForm: null,
+                init: function(handler) {
+                    if(!this[handler+"Form"]) {
+                        this[handler+"HandlerInit"]();
+                    }
+                },
+                checkoutHandlerInit: function(){
+                    this.checkoutForm = $("div.step-contactinfo #checkout-contact-form .wa-field-address");
+                    this.initCheckoutHints();
+                    $("#checkout-contact-form .wa-field-address").on("keyup", 'input[name$="[zip]"]', this.formUpdater);
+                    $("#checkout-contact-form .wa-field-address").on("change", 'input[name$="[city]"]', this.userModifyCheck);
+                    $("#checkout-contact-form .wa-field-address").on("change", 'select[name$="[region]"]', this.userModifyCheck);
+                },
+                shippingHandlerInit: function(){
+                    console.log("Shipping");
+                },
+                initCheckoutHints: function(){
+                    if(this.show_hint) {
+                        if($('select[name$="[country]"]', this.checkoutForm).val()==='rus') {
+                            $('input[name$="[zip]"]', this.checkoutForm).after('<span class="hint ziphint">{_wp("Region and city will be filled in automatically")|escape:javascript}</span>');
+                        } else {
+                            $('input[name$="[zip]"]', this.checkoutForm).after('<span class="hint ziphint">&nbsp;</span>');
+                        }
+                        this.checkoutForm.on("change", 'select[name$="[country]"]', function(){
+                            console.log(this);
+                            if($(this).val() === 'rus'){
+                                $.Zipomagic.zipHint(fieldset, '{_wp("Region and city will be filled in automatically")|escape:javascript}', { color:""});
+                            }
+                            else {
+                                $.Zipomagic.zipHint(fieldset," ", { color:""});
+                            };
+                        });
+                    }
+                },
+                userModifyCheck: function(){
+                    if($(this).val()){
+                        $(this).data('user-modified', 1);
+                    } else {
+                        $(this).data('user-modified', 0);
+                    }
+                },
+                formUpdater: function() {
+                    var fieldset = $(this).closest('.wa-field-address');
+                    var country = $('select[name$="[country]"] option:selected', fieldset).val();
+                    var city = $('input[name$="[city]"]', fieldset);
+                    var region = $.extend($('select[name$="[region]"]', fieldset),{
+                        zipomagicSelect: function(code){
+                            $('option[value="'+code+'"]', this).attr('selected', 'selected');
+                        }
+                    });
+                    var zip = $('input[name$="[zip]"]', fieldset);
+
+                    if(isRussia() && !isUserChangedCityOrRegion() && isZipComplete()){
+                        city.attr('disabled', 'disabled');
+                        region.attr('disabled', 'disabled');
+                        $.get($.Zipomagic.url, { zip:zip.val() })
+                            .success(function(r){
+                                if(r.status && r.status === 'ok' && r.data && r.data.city && r.data.region_code){
+                                    region.zipomagicSelect(r.data.region_code);
+                                    city.val(r.data.city);
+                                    $.Zipomagic.zipHint(fieldset, '{_wp("Сheck the correctness of the region and city fields")|escape:javascript}', { color:"forestgreen" });
+                                } else {
+                                    $.Zipomagic.zipHint(fieldset, r.errors[0], { color:"firebrick" });
+                                }
+                            })
+                            .error(function(){
+                                $.Zipomagic.zipHint(fieldset, '{_wp("Unknown error")|escape:javascript}', { color:"firebrick" });
+                            })
+                            .complete(function(){
+                                city.removeAttr('disabled');
+                                region.removeAttr('disabled');
+                            });
+                    };
+                    
+                    function isRussia() {
+                        return country === 'rus';
+                    };
+                    
+                    function isUserChangedCityOrRegion(){
+                        return city.data('user-modified') === 1 || region.data('user-modified') === 1;
+                    };
+                    
+                    function isZipComplete(){
+                        return zip.val().length === 6;
+                    };
+                    
+                },
+                zipHint: function(fieldset, str, css) {
+                    if($.Zipomagic.show_hint) {
+                        $(".ziphint", fieldset).text(str).css(css);
+                    }
+                }
+            };
+        };
+        $.Zipomagic.init('checkout');
+    });
+    
+    {*if $settings.show_hint}
     if($('#checkout-contact-form .wa-field-address select[name$="[country]"]').val()==='rus'){
         $('#checkout-contact-form .wa-field-address input[name$="[zip]"]').after('<span class="hint ziphint">[`Region and city will be filled in automatically`]</span>');
     } else { $('#checkout-contact-form .wa-field-address input[name$="[zip]"]').after('<span class="hint ziphint">&nbsp;</span>'); };
@@ -51,7 +154,7 @@
 {*
 * Если пользователь менял значение city или region вручную и у них непустые
 * значения, то мы ничего уже менять не будем
-*}
+*}{*
     $("#checkout-contact-form .wa-field-address").on("change", 'input[name$="[city]"]', function(){
         if($(this).val()){ $(this).data('user-modified', 1); }
         else { $(this).data('user-modified', 0); }
@@ -72,4 +175,5 @@
             {/if}
         };
     });
+*}    
 </script>
