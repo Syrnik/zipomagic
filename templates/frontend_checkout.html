@@ -11,24 +11,29 @@
                 url: '{$wa->getUrl('shop/frontend/zipomagic')}',
                 checkoutForm: null,
                 shippingForm: null,
+                steps: {json_encode($settings.steps)},
                 init: function(handler) {
                     if(!this[handler+"Form"]) {
                         this[handler+"HandlerInit"]();
                     }
                 },
                 checkoutHandlerInit: function(){
-                    this.checkoutForm = $("div.step-contactinfo #checkout-contact-form .wa-field-address");
-                    this.initCheckoutHints();
-                    $("#checkout-contact-form .wa-field-address").on("keyup", 'input[name$="[zip]"]', this.formUpdater);
-                    $("#checkout-contact-form .wa-field-address").on("change", 'input[name$="[city]"]', this.userModifyCheck);
-                    $("#checkout-contact-form .wa-field-address").on("change", 'select[name$="[region]"]', this.userModifyCheck);
+                    if(this.steps.contactinfo) {
+                        this.checkoutForm = $("div.step-contactinfo #checkout-contact-form .wa-field-address");
+                        this.initCheckoutHints();
+                        $("#checkout-contact-form .wa-field-address").on("keyup", 'input[name$="[zip]"]', this.formUpdater);
+                        $("#checkout-contact-form .wa-field-address").on("change", 'input[name$="[city]"]', this.userModifyCheck);
+                        $("#checkout-contact-form .wa-field-address").on("change", 'select[name$="[region]"]', this.userModifyCheck);
+                    }
                 },
                 shippingHandlerInit: function(){
-                    this.shippingForm = $('div.checkout-content[data-step-id="shipping"]');
-                    this.initShippingHints();
-                    this.shippingForm.on("change", '.wa-form.wa-address input[name$="[city]"]', this.userModifyCheck);
-                    this.shippingForm.on("change", '.wa-form.wa-address select[name$="[region]"]', this.userModifyCheck);
-                    this.shippingForm.on("keyup", '.wa-form.wa-address input[name$="[zip]"]', this.formUpdater);
+                    if(this.steps.shipping) {
+                        this.shippingForm = $('div.checkout-content[data-step-id="shipping"]');
+                        this.initShippingHints();
+                        this.shippingForm.on("change", '.wa-form.wa-address input[name$="[city]"]', this.userModifyCheck);
+                        this.shippingForm.on("change", '.wa-form.wa-address select[name$="[region]"]', this.userModifyCheck);
+                        this.shippingForm.on("keyup", '.wa-form.wa-address input[name$="[zip]"]', this.formUpdater);
+                    }
                 },
                 initShippingHints: function(){
                     // No hints at this release
