@@ -64,8 +64,8 @@
                     var city = $('input[name$="[city]"]', fieldset);
                     var region = $.extend($('select[name$="[region]"]', fieldset),{
                         zipomagicSelect: function(code){
-                            $('option', this).removeProp('selected');
-                            $('option[value="'+code+'"]', this).prop('selected', true);
+                            $('option', this).removeAttr('selected');
+                            $('option[value="'+code+'"]', this).attr('selected', "selected");
                         }
                     });
                     var zip = $('input[name$="[zip]"]', fieldset);
