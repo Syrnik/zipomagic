@@ -64,6 +64,7 @@
                     var city = $('input[name$="[city]"]', fieldset);
                     var region = $.extend($('select[name$="[region]"]', fieldset),{
                         zipomagicSelect: function(code){
+                            if($.cookie('Youregion')) $.cookie('Youregion', code);
                             $('option', this).removeAttr('selected');
                             $('option[value="'+code+'"]', this).attr('selected', "selected");
                         }
@@ -85,6 +86,7 @@
                                     city.removeAttr('disabled');
                                     region.removeAttr('disabled');
                                     region.zipomagicSelect(r.data.region_code);
+                                    if($.cookie('Youcity')) $.cookie('Youcity', r.data.city);
                                     city.val(r.data.city);
                                     city.trigger("change");
                                     city.data('user-modified',0);
