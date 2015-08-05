@@ -21,9 +21,10 @@
                     if(this.steps.contactinfo) {
                         this.checkoutForm = $("div.step-contactinfo #checkout-contact-form .wa-field-address");
                         this.initCheckoutHints();
-                        $("#checkout-contact-form .wa-field-address").on("keyup", 'input[name$="[zip]"]', this.formUpdater);
-                        $("#checkout-contact-form .wa-field-address").on("change", 'input[name$="[city]"]', this.userModifyCheck);
-                        $("#checkout-contact-form .wa-field-address").on("change", 'select[name$="[region]"]', this.userModifyCheck);
+                        var $address_field = $(".wa-field-address", "#checkout-contact-form");
+                        $address_field.on("keyup", 'input[name$="[zip]"]', this.formUpdater);
+                        $address_field.on("change", 'input[name$="[city]"]', this.userModifyCheck);
+                        $address_field.on("change", 'select[name$="[region]"]', this.userModifyCheck);
                     }
                 },
                 shippingHandlerInit: function(){
@@ -51,7 +52,7 @@
                             }
                             else {
                                 $.Zipomagic.zipHint(fieldset," ", { color:""});
-                            };
+                            }
                         });
                     }
                 },
@@ -75,7 +76,7 @@
                         country = $('select[name$="[country]"] option:selected', fieldset).val();
                     } else if($('input[name$="[country]"]', fieldset).length) {
                         country = $('input[name$="[country]"]', fieldset).val();
-                    };
+                    }
 
                     if(isRussia() && !isUserChangedCityOrRegion() && isZipComplete()){
                         city.attr('disabled', 'disabled');
@@ -102,19 +103,19 @@
                                 city.removeAttr('disabled');
                                 region.removeAttr('disabled');
                             });
-                    };
+                    }
                     
                     function isRussia() {
                         return country === 'rus';
-                    };
+                    }
                     
                     function isUserChangedCityOrRegion(){
                         return city.data('user-modified') === 1 || region.data('user-modified') === 1;
-                    };
+                    }
                     
                     function isZipComplete(){
                         return zip.val().length === 6;
-                    };
+                    }
                     
                 },
                 zipHint: function(fieldset, str, css) {
@@ -123,7 +124,7 @@
                     }
                 }
             };
-        };
+        }
         {if $stage == 'contactinfo'}{* @todo: Rename all methods and variables that depends of stage name *}
             $.Zipomagic.init('checkout');
         {/if}
