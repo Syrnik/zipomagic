@@ -1,3 +1,4 @@
+TRUNCATE TABLE `shop_zipomagic_zip`;
 INSERT INTO `shop_zipomagic_zip` (`id`, `zip`, `region_code`, `city`, `actdate`) VALUES
 (1, '101000', '77', 'Москва', '2011-01-21'),
 (2, '101300', '77', 'Москва', '2012-02-21'),
